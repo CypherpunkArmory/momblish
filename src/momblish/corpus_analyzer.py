@@ -1,4 +1,5 @@
 from itertools import groupby, chain
+from collections import defaultdict
 from momblish.corpus import Corpus
 import string
 
@@ -8,7 +9,7 @@ def each_cons(xs, n):
 
 
 class CorpusAnalyzer(object):
-    def __init__(self, corpus=iter([])):
+    def __init__(self, corpus=()):
         self.words = [word.rstrip() for word in corpus]
         self.corpus = Corpus({}, {})
         self.init_weighted_bigrams()
@@ -17,13 +18,15 @@ class CorpusAnalyzer(object):
     def init_weighted_bigrams(self):
         starting_bigrams = {}
 
+        def filtered_words():
+            for word in self.words:
+                if len(word) > 2 and string.punctuation not in word[0:2]:
+                    yield word
+
         # FIXME Counter would work here but doesn't do normalized distro
         # split each word into a set of "bigrams" (sets of 2 letters)
-        for word in self.words:
+        for word in filtered_words():
             bigram = word[0:2].upper()
-
-            if len(bigram) < 2 or string.punctuation in bigram:
-                continue
 
             if bigram in starting_bigrams:
                 starting_bigrams[bigram] += 1
@@ -43,9 +46,10 @@ class CorpusAnalyzer(object):
 
     def init_occurences(self):
         # assemble a list of trigrams in all the worlds
+        punct_and_newline = set(string.punctuation + "\n")
         trigrams = []
         for word in self.words:
-            if set(string.punctuation + "\n").isdisjoint(set(word)):
+            if punct_and_newline.isdisjoint(set(word)):
                 trigrams.append(list(each_cons(word.upper(), 3)))
 
         # flatten to a global list of trigrams
@@ -54,11 +58,8 @@ class CorpusAnalyzer(object):
         # FIXME Counter would work here but doesn't do normalized distro
         # group the trigrams by their beginning bigram
         # and store the frequency of the last letter into the occurence hash
-        self.corpus.occurences = {}
+        self.corpus.occurences = defaultdict(dict)
         for bigram, trigram in groupby(trigrams, lambda x: ''.join(x[0:2])):
-            if bigram not in self.corpus.occurences:
-                self.corpus.occurences[bigram] = {}
-
             last_char = list(trigram)[0][-1]
 
             if last_char in self.corpus.occurences[bigram]:
