@@ -24,17 +24,18 @@ class EmptyCorpusError(Exception):
 
 
 class Momblish(object):
-    def __init__(self, corpus=None):
+    def __init__(self, blacklist= {}, corpus=None):
         self.corpus = corpus if corpus else Corpus()
-
+        self.blacklist = blacklist
         if not (corpus.weighted_bigrams and corpus.occurences):
             raise EmptyCorpusError('Your corpus has no words')
 
     @classmethod
     def english(cls):
         dict_file = lookup_dict('english')
+        blacklist = set(line.strip() for line in open(os.getcwd() + '/momblish/blacklists/en'))
         corpus = CorpusAnalyzer(open(dict_file, 'r')).corpus
-        return cls(corpus)
+        return cls(blacklist, corpus)
 
     def word(self, length=None):
         length = length if length else random.randint(4, 10)
@@ -45,10 +46,19 @@ class Momblish(object):
 
         for _ in range(length-2):
             last_bigram = word[-2:]
-            next_letter = random.choices(
-                    list(self.corpus.occurences[last_bigram]),
-                    weights=self.corpus.occurences[last_bigram].values())[0]
+            try:
+                next_letter = random.choices(
+                        list(self.corpus.occurences[last_bigram]),
+                        weights=self.corpus.occurences[last_bigram].values())[0]
+            except:
+                return word
+
             word += next_letter
+
+            if word in self.blacklist:
+                word = random.choices(
+                    list(self.corpus.weighted_bigrams.keys()),
+                    weights=self.corpus.weighted_bigrams.values())[0]
 
         return word
 
