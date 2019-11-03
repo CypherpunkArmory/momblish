@@ -2,9 +2,9 @@ import json
 
 
 class Corpus(object):
-    def __init__(self, weighted_bigrams={}, occurences={}):
+    def __init__(self, weighted_bigrams={}, occurrences={}):
         self.weighted_bigrams = weighted_bigrams
-        self.occurences = occurences
+        self.occurrences = occurrences
 
     @classmethod
     def load(cls, path):
@@ -14,12 +14,12 @@ class Corpus(object):
         return cls(**json.loads(data))
 
     def __eq__(self, other):
-        return self.weighted_bigrams == other.weighted_bigrams and self.occurences == other.occurences
+        return self.weighted_bigrams == other.weighted_bigrams and self.occurrences == other.occurrences
 
     def save(self, path):
         saved_corpus = {
             'weighted_bigrams': self.weighted_bigrams,
-            'occurences': self.occurences
+            'occurrences': self.occurrences
         }
 
         with open(path, 'w') as f:
