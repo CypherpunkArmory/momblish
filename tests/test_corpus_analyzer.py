@@ -66,7 +66,7 @@ class TestCorpusAnalyzer(object):
     def test_grouped_trigrams(self, corpus_analyzer):
         """ Initializes all trigrams, and groups them by preceding bigrams"""
 
-        occurences_expected = {
+        occurrences_expected = {
              'AB': {'C': 0.5, 'D': 0.5},
              'AC': {'B': 0.5, 'D': 0.5},
              'AD': {'B': 0.5, 'C': 0.5},
@@ -81,7 +81,7 @@ class TestCorpusAnalyzer(object):
              'DC': {'A': 0.5, 'B': 0.5},
         }
 
-        assert corpus_analyzer.corpus.occurences == occurences_expected
+        assert corpus_analyzer.corpus.occurrences == occurrences_expected
 
     def test_trigrams_exclude_punctuation(self):
         bad_corpus = [
@@ -97,4 +97,4 @@ class TestCorpusAnalyzer(object):
 
         c = CorpusAnalyzer(corpus=bad_corpus)
 
-        assert c.corpus.occurences == expected
+        assert c.corpus.occurrences == expected

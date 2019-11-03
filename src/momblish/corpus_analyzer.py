@@ -13,7 +13,7 @@ class CorpusAnalyzer(object):
         self.words = [word.rstrip() for word in corpus]
         self.corpus = Corpus({}, {})
         self.init_weighted_bigrams()
-        self.init_occurences()
+        self.init_occurrences()
 
     def init_weighted_bigrams(self):
         starting_bigrams = {}
@@ -33,7 +33,7 @@ class CorpusAnalyzer(object):
             else:
                 starting_bigrams[bigram] = 1
 
-        # we sum the total number of OCCURENCES of each bigram to give us a
+        # we sum the total number of OCCURRENCES of each bigram to give us a
         # weighted average of the chances that a word starts with particular
         # bigram
         # common bigram:  TH
@@ -44,7 +44,7 @@ class CorpusAnalyzer(object):
             # assign all of the known bigrams a weight given their frequency
             self.corpus.weighted_bigrams[bigram] = count / total
 
-    def init_occurences(self):
+    def init_occurrences(self):
         # assemble a list of trigrams in all the worlds
         punct_and_newline = set(string.punctuation + "\n")
         trigrams = []
@@ -57,18 +57,18 @@ class CorpusAnalyzer(object):
 
         # FIXME Counter would work here but doesn't do normalized distro
         # group the trigrams by their beginning bigram
-        # and store the frequency of the last letter into the occurence hash
-        self.corpus.occurences = defaultdict(dict)
+        # and store the frequency of the last letter into the occurrence hash
+        self.corpus.occurrences = defaultdict(dict)
         for bigram, trigram in groupby(trigrams, lambda x: ''.join(x[0:2])):
             last_char = list(trigram)[0][-1]
 
-            if last_char in self.corpus.occurences[bigram]:
-                self.corpus.occurences[bigram][last_char] += 1
+            if last_char in self.corpus.occurrences[bigram]:
+                self.corpus.occurrences[bigram][last_char] += 1
             else:
-                self.corpus.occurences[bigram][last_char] = 1
+                self.corpus.occurrences[bigram][last_char] = 1
 
-        # convert that raw occurence numbers into relative frequency
-        for bigram, last_letters in self.corpus.occurences.items():
+        # convert that raw occurrence numbers into relative frequency
+        for bigram, last_letters in self.corpus.occurrences.items():
             total = sum(last_letters.values())
             for last_letter in last_letters:
-                self.corpus.occurences[bigram][last_letter] /= total
+                self.corpus.occurrences[bigram][last_letter] /= total

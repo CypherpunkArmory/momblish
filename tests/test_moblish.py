@@ -81,4 +81,4 @@ class TestMomblish(object):
         """Loads the english dictionary from /usr/share/dict or /usr/share/dict/web2"""
 
         m = Momblish.english()
-        assert m.corpus.occurences
+        assert m.corpus.occurrences

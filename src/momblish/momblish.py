@@ -27,7 +27,7 @@ class Momblish(object):
     def __init__(self, corpus=None):
         self.corpus = corpus if corpus else Corpus()
 
-        if not (corpus.weighted_bigrams and corpus.occurences):
+        if not (corpus.weighted_bigrams and corpus.occurrences):
             raise EmptyCorpusError('Your corpus has no words')
 
     @classmethod
@@ -46,8 +46,8 @@ class Momblish(object):
         for _ in range(length-2):
             last_bigram = word[-2:]
             next_letter = random.choices(
-                    list(self.corpus.occurences[last_bigram]),
-                    weights=self.corpus.occurences[last_bigram].values())[0]
+                    list(self.corpus.occurrences[last_bigram]),
+                    weights=self.corpus.occurrences[last_bigram].values())[0]
             word += next_letter
 
         return word
