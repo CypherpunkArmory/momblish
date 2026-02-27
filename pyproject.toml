@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 name = "momblish"
 version = "0.2.0"
 description = "Generate nonsense words from a corpus using trigram analysis"
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.14"
 dependencies = []
 
@@ -27,6 +27,15 @@ pythonpath = [
 testpaths = [
     "tests",
 ]
+
+[tool.uv]
+trusted-publishing = "automatic"
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
 
 [tool.hatch.build.targets.wheel]
 packages = [
