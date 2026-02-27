@@ -52,11 +52,20 @@ of varying length.
 .. code:: python
     m.word()                     #= > 'PONESSAL'
     m.word(10)                   #= > 'MIDONIHYLA'
+    m.word(6, prefix='d')        #= > 'D...'
     w = m.sentence()             #= > <generator object Momblish.sentence at 0x10513dc78>
     next(w)                      #= > 'TICK'
     next(w)                      #= > 'DRIXY'
     next(w)                      #= > 'UNREA'
     m.sentence(3, word_length=5) #= > ['LEDGE', 'DEAKA', 'HONGI']
+
+There is also a command line interface for quick generation without writing code.
+
+.. code:: console
+    $ momble 6
+    $ momble 7 dabc
+    $ momble --rebuild-cache 7 dabc
+    $ momble --corpus /tmp/words.txt 7 dabc
 
 Note
 ====
