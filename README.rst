@@ -2,20 +2,21 @@
 momblish
 ========
 
-Momblish is a library for generating fake words in any phoenetic.
+Momblish is a small library and CLI for generating fake-but-pronounceable
+words from a source corpus.
 
 http://mentalfloss.com/article/69880/7-fake-words-ended-dictionary
 
 It is named after a "fake" word put into the OED on accident.
 
 
-Momblish uses trigram analysis to generate (mostly) pronounacble gibberish - so
+Momblish uses trigram analysis to generate (mostly) pronounceable gibberish, so
 it can be used for any language that can be n-gram analyzed.
 
 Description
 ===========
 
-To use moblish, import it -
+To use momblish, import it.
 
 .. code:: python
 
@@ -23,19 +24,12 @@ To use moblish, import it -
 
     m = Momblish.english()
 
-
-Currently - only the english corpus is available.
-
-
-Each time you load the English momblish it will perform an analysis on
-`/usr/share/dict` and use that data to generate nonsense words.
-
-To avoid this computation overhead, you can save the pre-analyzed corpus
-as a file and read it in on demand.
+The built-in English loader analyzes the system dictionary once and caches the
+result in the XDG cache directory.
 
 .. code:: python
 
-    from mombmlish import Momblish
+    from momblish import Momblish
     from momblish.corpus import Corpus
 
     m = Momblish.english()
@@ -50,25 +44,33 @@ To get Momblish to generate words for you call `word` on a Momblish instance.
 of varying length.
 
 .. code:: python
+
     m.word()                     #= > 'PONESSAL'
     m.word(10)                   #= > 'MIDONIHYLA'
     m.word(6, prefix='d')        #= > 'D...'
+    m.word(7, prefix='dabc')     #= > 'DABCADC'
     w = m.sentence()             #= > <generator object Momblish.sentence at 0x10513dc78>
     next(w)                      #= > 'TICK'
     next(w)                      #= > 'DRIXY'
     next(w)                      #= > 'UNREA'
     m.sentence(3, word_length=5) #= > ['LEDGE', 'DEAKA', 'HONGI']
 
+You can also analyze your own corpus file.
+
+.. code:: python
+
+    custom = Momblish.from_file('/tmp/words.txt')
+    custom.word(8, prefix='tr')
+
 There is also a command line interface for quick generation without writing code.
 
 .. code:: console
+
     $ momble 6
     $ momble 7 dabc
     $ momble --rebuild-cache 7 dabc
     $ momble --corpus /tmp/words.txt 7 dabc
 
-Note
-====
-
-This project has been set up using PyScaffold 3.1. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
+The CLI uses the cached analyzed corpus when available. Pass
+`--rebuild-cache` to force re-analysis of either the default English corpus or
+the file supplied with `--corpus`.
